@@ -20,9 +20,24 @@ db.mysql = function(dbconf) {
     return inst;
 }
 
+db.mysql_close = function(dbconf, cb) {
+    var key = dbconf.host + ":" + dbconf.port + ":" + dbconf.database;
+    var inst = db._instances[key];
+    if(!!inst) {
+        delete db._instances[key];
+        inst.close(cb);
+        console.log("mysql release:",key)
+    }
+    else{
+        if(cb && typeof cb == "function") {
+            cb();
+        }
+    }
+}
+
 var MySQLInstance = function(dbconf){
     this.pool = mysql.createPool(dbconf);
-    // this.pool.on("")
+    console.log("mysql started.");
 };
 
 MySQLInstance.prototype.query = function(sql, cb) {
