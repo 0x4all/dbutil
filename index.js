@@ -40,12 +40,12 @@ var MySQLInstance = function(dbconf){
     console.log("mysql started.");
 };
 
-MySQLInstance.prototype.query = function(sql, cb) {
+MySQLInstance.prototype.query = function(sql, args, cb) {
     this.pool.getConnection(function(err, conn){  
         if(err){  
             cb(err, null, null);  
         }else{  
-            conn.query(sql,function(err, vals, fields){  
+            conn.query(sql, args,function(err, vals, fields){  
                 conn.release();  
                 cb(err, vals, fields);  
             });  
