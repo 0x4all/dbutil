@@ -37,3 +37,12 @@ MySQLInstance.prototype.query = function(sql, cb) {
         }  
     }); 
 }
+
+MySQLInstance.prototype.close = function(cb){
+    this.pool.end((err)=>{
+        console.log("mysql closed.",err ? err : "");
+        if(cb && typeof cb == "function") {
+            cb(err);
+        }
+    });
+}
