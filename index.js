@@ -92,7 +92,7 @@ var updateSql = function(tablename, info, byname, callback){
 }
 
 var findSql = function(tablename, byname, byvalue, callback){
-    var sql = "SELECT * from" + tablename + " where " + byname + "=?";
+    var sql = "SELECT * from " + tablename + " where " + byname + "=?";
     this.query(sql,[byvalue], function(err, rows, fields) {
         if (err) {
             err.type = "db";
