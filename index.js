@@ -99,7 +99,11 @@ var findSql = function(tablename, byname, byvalue, callback){
             callback(err);
             return;
         }
-        callback(null, info);
+        if(rows.length  == 1) {
+            callback(null,rows[0]);
+            return;
+        }
+        callback(null, rows);
     });
 }
 
