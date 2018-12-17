@@ -121,7 +121,7 @@ var createSql = function(tablename, info, callback){
             callback(err, 0);
             return;
         }
-        callback(null, info);
+        callback(null, rows);
     });
 
 }
