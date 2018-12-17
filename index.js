@@ -61,3 +61,71 @@ MySQLInstance.prototype.close = function(cb){
         }
     });
 }
+
+
+var updateSql = function(tablename, info, byname, callback){
+    var sql = "UPDATE "+tablename+" SET ";
+    var sqlargs = [];
+    var prefix = "";
+    for(var o in info) {
+        if(info.hasOwnProperty(o) && o!=byname){
+            sqlargs.push(info[o]);
+            sql += prefix + o + "=?"
+            prefix = ",";
+        }
+    }
+    if(sqlargs.length == 0) {
+        callback({type:"system",errmsg:"no fields offer when update db."+tablename},null);
+        return;
+    }
+    sql += " where "+byname+"=?";
+    sqlargs.push(info[byname]);
+    this.query(sql,sqlargs, function(err, rows, fields) {
+        if (err) {
+            err.type ="db";
+            callback(err, null);
+            return;
+        }
+        callback(null, info);
+    });
+
+}
+
+var createSql = function(tablename, info, callback){
+    var sql = "INSERT INTO "+ tablename +"(";
+    var prefix= "";
+    var params = ") VALUES(";
+    var args = [];
+    for(var o in info){
+        sql += prefix + o; //uuid
+        params += prefix + "?";
+        args.push(info[o]);
+        prefix = ","
+    }
+    sql += params + ")";
+    this.query(sql,args, function(err, rows, fields) {
+        if (err) {
+            err.type = "db";
+            callback(err, 0);
+            return;
+        }
+        callback(null, info);
+    });
+
+}
+
+MySQLInstance.prototype.createSql = createSql;
+MySQLInstance.prototype.updateSql = updateSql;
+
+
+// var test = {
+//     query: function(sql, args, cb) { console.log(sql, args); if(cb){cb(null, sql +"," + JSON.stringify(args))}},
+//     createSql: createSql,
+//     updateSql: updateSql
+// }
+
+// var tablename = "t_mj_rooms";
+// var info = {id: 1001, name:"test", time:Date.now(),host:"12012",port:100};
+
+// test.createSql(tablename, info, ()=>{});
+// test.updateSql(tablename, info, "id",()=>{});
