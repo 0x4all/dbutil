@@ -114,8 +114,22 @@ var createSql = function(tablename, info, callback){
 
 }
 
+var deleteSql = function(tablename, byname, byvalue, callback){
+    var sql = "DELETE FROM " + tablename + " where " + byname + "=?";
+    this.query(sql,[byvalue],function(err, rows,fields){
+        if (err) {
+            err.type = "db";
+            callback(err, 0);
+            return;
+        }
+        callback(null);
+    })
+}
+
+
 MySQLInstance.prototype.createSql = createSql;
 MySQLInstance.prototype.updateSql = updateSql;
+MySQLInstance.prototype.deleteSql = deleteSql;
 
 
 // var test = {
