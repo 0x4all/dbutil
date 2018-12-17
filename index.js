@@ -91,6 +91,18 @@ var updateSql = function(tablename, info, byname, callback){
 
 }
 
+var findSql = function(tablename, byname, byvalue, callback){
+    var sql = "SELECT * from" + tablename + " where " + byname + "=?";
+    this.query(sql,[byvalue], function(err, rows, fields) {
+        if (err) {
+            err.type = "db";
+            callback(err);
+            return;
+        }
+        callback(null, info);
+    });
+}
+
 var createSql = function(tablename, info, callback){
     var sql = "INSERT INTO "+ tablename +"(";
     var prefix= "";
@@ -116,7 +128,7 @@ var createSql = function(tablename, info, callback){
 
 var deleteSql = function(tablename, byname, byvalue, callback){
     var sql = "DELETE FROM " + tablename + " where " + byname + "=?";
-    this.query(sql,[byvalue],function(err, rows,fields){
+    this.query(sql,[byvalue],function(err, rows, fields){
         if (err) {
             err.type = "db";
             callback(err, 0);
@@ -130,6 +142,7 @@ var deleteSql = function(tablename, byname, byvalue, callback){
 MySQLInstance.prototype.createSql = createSql;
 MySQLInstance.prototype.updateSql = updateSql;
 MySQLInstance.prototype.deleteSql = deleteSql;
+MySQLInstance.prototype.findSql = findSql;
 
 
 // var test = {
