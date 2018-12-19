@@ -140,7 +140,7 @@ var deleteSql = function(tablename, byname, byvalue, callback){
     })
 }
 
-function has_db_err(err, callback){
+db.has_db_err = function(err, callback){
     if(err) {
         err.type = "db";
         callback( err );
@@ -149,7 +149,7 @@ function has_db_err(err, callback){
     return false;
 }
 
-function has_no_result(rows, callback){
+db.has_no_result = function(rows, callback){
     if(rows.length == 0 ){
         callback(null, null);
         return true;
@@ -161,9 +161,6 @@ MySQLInstance.prototype.createSql = createSql;
 MySQLInstance.prototype.updateSql = updateSql;
 MySQLInstance.prototype.deleteSql = deleteSql;
 MySQLInstance.prototype.findSql = findSql;
-
-MySQLInstance.prototype.has_db_err = has_db_err;
-MySQLInstance.prototype.has_no_result = has_no_result;
 
 
 
