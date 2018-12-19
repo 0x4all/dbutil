@@ -26,7 +26,6 @@ db.mysql_close = function(dbconf, cb) {
     if(!!inst) {
         delete db._instances[key];
         inst.close(cb);
-        console.log("mysql release:",key)
     }
     else{
         if(cb && typeof cb == "function") {
@@ -75,7 +74,7 @@ var updateSql = function(tablename, info, byname, callback){
         }
     }
     if(sqlargs.length == 0) {
-        callback({type:"system",errmsg:"no fields offer when update db."+tablename},null);
+        callback({type:"system",errmsg:"no fields offer when update db." + tablename},null);
         return;
     }
     sql += " where "+byname+"=?";
@@ -127,7 +126,6 @@ var createSql = function(tablename, info, callback){
         }
         callback(null, rows);
     });
-
 }
 
 var deleteSql = function(tablename, byname, byvalue, callback){
@@ -142,11 +140,32 @@ var deleteSql = function(tablename, byname, byvalue, callback){
     })
 }
 
+function has_db_err(err, callback){
+    if(err) {
+        err.type = "db";
+        callback( err );
+        return true;
+    }
+    return false;
+}
+
+function has_no_result(rows, callback){
+    if(rows.length == 0 ){
+        callback(null, null);
+        return true;
+    }
+    return false;
+}
 
 MySQLInstance.prototype.createSql = createSql;
 MySQLInstance.prototype.updateSql = updateSql;
 MySQLInstance.prototype.deleteSql = deleteSql;
 MySQLInstance.prototype.findSql = findSql;
+
+MySQLInstance.prototype.has_db_err = has_db_err;
+MySQLInstance.prototype.has_no_result = has_no_result;
+
+
 
 
 // var test = {
