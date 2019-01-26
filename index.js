@@ -90,6 +90,41 @@ var updateSql = function(tablename, info, byname, callback){
 
 }
 
+
+var updateSqlByIndexs = function(tablename, info, wheres, callback){
+    var sql = "UPDATE "+tablename+" SET ";
+    var sqlargs = [];
+    var prefix = "";
+    for(var o in info) {
+        if(info.hasOwnProperty(o) && wheres.indexOf(o)<0){
+            sqlargs.push(info[o]);
+            sql += prefix + o + "=?"
+            prefix = ",";
+        }
+    }
+    if(sqlargs.length == 0) {
+        callback({type:"sys",errmsg:"no fields offer when update db." + tablename},null);
+        return;
+    }
+    sql += " where ";
+    prefix = "";
+    wheres.forEach(whereby => {
+        sql += prefix + " " + whereby + "=?";
+        prefix = "and";
+        sqlargs.push(info[whereby]);
+    });
+
+    this.query(sql,sqlargs, function(err, rows, fields) {
+        if (err) {
+            err.type ="db";
+            callback(err, null);
+            return;
+        }
+        callback(null, info);
+    });
+
+}
+
 var findSql = function(tablename, byname, byvalue, callback){
     var sql = "SELECT * from " + tablename + " where " + byname + "=?";
     this.query(sql,[byvalue], function(err, rows, fields) {
@@ -184,6 +219,7 @@ MySQLInstance.prototype.updateSql = updateSql;
 MySQLInstance.prototype.deleteSql = deleteSql;
 MySQLInstance.prototype.findSql = findSql;
 MySQLInstance.prototype.replaceSql = replaceSql;
+MySQLInstance.prototype.updateSqlByIndexs = updateSqlByIndexs;
 
 
 
