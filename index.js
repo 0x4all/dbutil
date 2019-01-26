@@ -91,7 +91,7 @@ var updateSql = function(tablename, info, byname, callback){
 }
 
 
-var updateSqlByIndexs = function(tablename, info, wheres, callback){
+var updateSqlByIndexes = function(tablename, info, wheres, callback){
     var sql = "UPDATE "+tablename+" SET ";
     var sqlargs = [];
     var prefix = "";
@@ -109,8 +109,8 @@ var updateSqlByIndexs = function(tablename, info, wheres, callback){
     sql += " where ";
     prefix = "";
     wheres.forEach(whereby => {
-        sql += prefix + " " + whereby + "=?";
-        prefix = "and";
+        sql += prefix + " " + whereby + "=? ";
+        prefix = " and ";
         sqlargs.push(info[whereby]);
     });
 
@@ -219,19 +219,21 @@ MySQLInstance.prototype.updateSql = updateSql;
 MySQLInstance.prototype.deleteSql = deleteSql;
 MySQLInstance.prototype.findSql = findSql;
 MySQLInstance.prototype.replaceSql = replaceSql;
-MySQLInstance.prototype.updateSqlByIndexs = updateSqlByIndexs;
+MySQLInstance.prototype.updateSqlByIndexes = updateSqlByIndexes;
 
 
 
 
-// var test = {
-//     query: function(sql, args, cb) { console.log(sql, args); if(cb){cb(null, sql +"," + JSON.stringify(args))}},
-//     createSql: createSql,
-//     updateSql: updateSql
-// }
+var test = {
+    query: function(sql, args, cb) { console.log(sql, args); if(cb){cb(null, sql +"," + JSON.stringify(args))}},
+    createSql: createSql,
+    updateSql: updateSql,
+    updateSqlByIndexes:updateSqlByIndexes,
+}
 
-// var tablename = "t_mj_rooms";
-// var info = {id: 1001, name:"test", time:Date.now(),host:"12012",port:100};
+var tablename = "t_mj_rooms";
+var info = {id: 1001, name:"test", time:Date.now(),host:"12012",port:100};
 
-// test.createSql(tablename, info, ()=>{});
-// test.updateSql(tablename, info, "id",()=>{});
+test.createSql(tablename, info, ()=>{});
+test.updateSql(tablename, info, "id",()=>{});
+test.updateSqlByIndexes(tablename, info, ["id","name"],()=>{});
