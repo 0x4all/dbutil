@@ -224,16 +224,16 @@ MySQLInstance.prototype.updateSqlByIndexes = updateSqlByIndexes;
 
 
 
-var test = {
-    query: function(sql, args, cb) { console.log(sql, args); if(cb){cb(null, sql +"," + JSON.stringify(args))}},
-    createSql: createSql,
-    updateSql: updateSql,
-    updateSqlByIndexes:updateSqlByIndexes,
-}
+// var test = {
+//     query: function(sql, args, cb) { console.log(sql, args); if(cb){cb(null, sql +"," + JSON.stringify(args))}},
+//     createSql: createSql,
+//     updateSql: updateSql,
+//     updateSqlByIndexes:updateSqlByIndexes,
+// }
 
-var tablename = "t_mj_rooms";
-var info = {id: 1001, name:"test", time:Date.now(),host:"12012",port:100};
+// var tablename = "t_mj_rooms";
+// var info = {id: 1001, name:"test", time:Date.now(),host:"12012",port:100};
 
-test.createSql(tablename, info, ()=>{});
-test.updateSql(tablename, info, "id",()=>{});
-test.updateSqlByIndexes(tablename, info, ["id","name"],()=>{});
+// test.createSql(tablename, info, ()=>{});
+// test.updateSql(tablename, info, "id",()=>{});
+// test.updateSqlByIndexes(tablename, info, ["id","name"],()=>{});
