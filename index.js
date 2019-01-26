@@ -74,7 +74,7 @@ var updateSql = function(tablename, info, byname, callback){
         }
     }
     if(sqlargs.length == 0) {
-        callback({type:"system",errmsg:"no fields offer when update db." + tablename},null);
+        callback({type:"sys",errmsg:"no fields offer when update db." + tablename},null);
         return;
     }
     sql += " where "+byname+"=?";
@@ -124,7 +124,29 @@ var createSql = function(tablename, info, callback){
             callback(err, 0);
             return;
         }
-        callback(null, rows);
+        callback(null, info);
+    });
+}
+
+var replaceSql = function(tablename, info, callback){
+    var sql = "REPLACE INTO "+ tablename +"(";
+    var prefix= "";
+    var params = ") VALUES(";
+    var args = [];
+    for(var o in info){
+        sql += prefix + o; //uuid
+        params += prefix + "?";
+        args.push(info[o]);
+        prefix = ","
+    }
+    sql += params + ")";
+    this.query(sql,args, function(err, rows, fields) {
+        if (err) {
+            err.type = "db";
+            callback(err, 0);
+            return;
+        }
+        callback(null, info);
     });
 }
 
@@ -136,7 +158,7 @@ var deleteSql = function(tablename, byname, byvalue, callback){
             callback(err, 0);
             return;
         }
-        callback(null);
+        callback(null, true);
     })
 }
 
@@ -161,6 +183,7 @@ MySQLInstance.prototype.createSql = createSql;
 MySQLInstance.prototype.updateSql = updateSql;
 MySQLInstance.prototype.deleteSql = deleteSql;
 MySQLInstance.prototype.findSql = findSql;
+MySQLInstance.prototype.replaceSql = replaceSql;
 
 
 
