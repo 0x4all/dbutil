@@ -36,7 +36,7 @@ db.mysql_close = function(dbconf, cb) {
 
 var MySQLInstance = function(dbconf){
     this.pool = mysql.createPool(dbconf);
-    console.log("mysql started.");
+    console.info("mysql started.");
 };
 
 MySQLInstance.prototype.query = function(sql, args, cb) {
@@ -54,7 +54,7 @@ MySQLInstance.prototype.query = function(sql, args, cb) {
 
 MySQLInstance.prototype.close = function(cb){
     this.pool.end((err)=>{
-        console.log("mysql closed.",err ? err : "");
+        console.info("mysql closed.",err ? err : "");
         if(cb && typeof cb == "function") {
             cb(err);
         }
@@ -74,14 +74,13 @@ var updateSql = function(tablename, info, byname, callback){
         }
     }
     if(sqlargs.length == 0) {
-        callback({type:"sys",errmsg:"no fields offer when update db." + tablename},null);
+        callback(null, info);//
         return;
     }
-    sql += " where "+byname+"=?";
+    sql += " where "+ byname + "=?";
     sqlargs.push(info[byname]);
-    this.query(sql,sqlargs, function(err, rows, fields) {
+    this.query(sql, sqlargs, function(err, rows, fields) {
         if (err) {
-            err.type ="db";
             callback(err, null);
             return;
         }
@@ -103,7 +102,7 @@ var updateSqlByIndexes = function(tablename, info, wheres, callback){
         }
     }
     if(sqlargs.length == 0) {
-        callback({type:"sys",errmsg:"no fields offer when update db." + tablename},null);
+        callback(null, info);
         return;
     }
     sql += " where ";
@@ -116,7 +115,6 @@ var updateSqlByIndexes = function(tablename, info, wheres, callback){
 
     this.query(sql,sqlargs, function(err, rows, fields) {
         if (err) {
-            err.type ="db";
             callback(err, null);
             return;
         }
@@ -129,7 +127,6 @@ var findSql = function(tablename, byname, byvalue, callback){
     var sql = "SELECT * from " + tablename + " where " + byname + "=?";
     this.query(sql,[byvalue], function(err, rows, fields) {
         if (err) {
-            err.type = "db";
             callback(err);
             return;
         }
@@ -155,7 +152,6 @@ var createSql = function(tablename, info, callback){
     sql += params + ")";
     this.query(sql,args, function(err, rows, fields) {
         if (err) {
-            err.type = "db";
             callback(err, 0);
             return;
         }
@@ -177,7 +173,6 @@ var replaceSql = function(tablename, info, callback){
     sql += params + ")";
     this.query(sql,args, function(err, rows, fields) {
         if (err) {
-            err.type = "db";
             callback(err, 0);
             return;
         }
@@ -189,7 +184,6 @@ var deleteSql = function(tablename, byname, byvalue, callback){
     var sql = "DELETE FROM " + tablename + " where " + byname + "=?";
     this.query(sql,[byvalue],function(err, rows, fields){
         if (err) {
-            err.type = "db";
             callback(err, 0);
             return;
         }
@@ -199,7 +193,6 @@ var deleteSql = function(tablename, byname, byvalue, callback){
 
 db.has_db_err = function(err, callback){
     if(err) {
-        err.type = "db";
         callback( err );
         return true;
     }
